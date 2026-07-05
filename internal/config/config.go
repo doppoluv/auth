@@ -25,7 +25,7 @@ func Load() (*Config, error) {
 	configPath := fetchConfigPath()
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		return nil, fmt.Errorf("fetch configuration: %w", err)
+		return nil, fmt.Errorf("check configuration file: %w", err)
 	}
 
 	var cfg Config
@@ -39,7 +39,7 @@ func Load() (*Config, error) {
 func fetchConfigPath() string {
 	var path string
 
-	flag.StringVar(&path, "config", "config/auth.yaml", "path to the configuration file")
+	flag.StringVar(&path, "config", "", "path to the configuration file")
 	flag.Parse()
 
 	return path

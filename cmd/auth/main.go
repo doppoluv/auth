@@ -1,15 +1,17 @@
 package main
 
 import (
+	"log"
+
 	"auth/internal/config"
-	"fmt"
 )
 
 func main() {
 	cfg, err := config.Load()
 	if err != nil {
-		panic(err)
+		log.Fatalf("load configuration: %v", err)
 	}
 
-	fmt.Printf("Configuration loaded: %+v\n", cfg)
+	log.Printf("Configuration loaded: %+v\n", cfg) // remove this line in prod
+
 }
