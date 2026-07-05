@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package auth;
 
-option go_package = "github.com/doppoluv/auth/proto/auth;auth";
+option go_package = "github.com/doppoluv/auth/proto/auth/v1;authv1";
 
-service AuthService {
+service Auth {
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
