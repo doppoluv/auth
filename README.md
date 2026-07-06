@@ -13,4 +13,4 @@
 - `env` - окружение (`local`, `production`)
 - `storage_path` - путь к локальной БД/хранилищу
 - `token_ttl` - время жизни токена
-- `grpc.host`, `grpc.port`, `grpc.timeout` - параметры gRPC
+- `grpc.port`, `grpc.timeout` - параметры gRPC

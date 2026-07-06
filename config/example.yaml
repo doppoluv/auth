@@ -2,6 +2,5 @@ env: "production" ## local, production
 storage_path: "storage/auth.db"
 token_ttl: 1h
 grpc:
-  host: "127.0.0.1"
   port: 50051
   timeout: 5s
