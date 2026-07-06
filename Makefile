@@ -1,6 +1,15 @@
+BIN_DIR := bin
+APP_BIN := $(BIN_DIR)/auth
+
 PROTO_DIR := proto
 GEN_DIR := gen/go
 PROTO_FILE := $(PROTO_DIR)/auth/v1/auth.proto
+
+.PHONY: build
+build:
+	rm -rf $(BIN_DIR)
+	mkdir -p $(BIN_DIR)
+	go build -o $(APP_BIN) ./cmd/auth
 
 .PHONY: proto
 proto:
