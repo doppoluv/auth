@@ -1,12 +1,13 @@
 package main
 
 import (
-	"log"
-
 	"auth/internal/config"
+	"auth/internal/logger"
 )
 
 func main() {
+	log := logger.NewLogger()
+
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatalf("load configuration: %v", err)
