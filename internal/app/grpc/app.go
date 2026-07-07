@@ -22,7 +22,7 @@ func NewApp(
 ) *App {
 	gRPCServer := grpc.NewServer()
 
-	grpcauth.Register(gRPCServer)
+	grpcauth.Register(gRPCServer, nil) // TODO: передать реализацию интерфейса Auth
 
 	return &App{
 		log:  log,

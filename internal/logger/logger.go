@@ -15,7 +15,7 @@ func NewLogger() interfaces.Logger {
 }
 
 func (l *Logger) Printf(format string, args ...any) {
-	l.logger.Printf(format, args...)
+	l.logger.Printf("[INFO] "+format, args...)
 }
 
 func (l *Logger) Errorf(format string, args ...any) {
