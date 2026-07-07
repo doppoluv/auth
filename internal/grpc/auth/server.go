@@ -11,7 +11,7 @@ import (
 )
 
 type Auth interface {
-	Login(ctx context.Context, username, password string) (token string, err error)
+	Login(ctx context.Context, username, password string, app_id int) (token string, err error)
 	Register(ctx context.Context, username, password, email string) (user_id int, err error)
 	IsAdmin(ctx context.Context, user_id int) (is_admin bool, err error)
 }
@@ -61,7 +61,11 @@ func (s *ServerAPI) Login(
 		return nil, status.Errorf(codes.InvalidArgument, "validate password: %v", err)
 	}
 
-	token, err := s.auth.Login(ctx, req.GetUsername(), req.GetPassword())
+	if err := s.validateAppId(); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "validate app id: %v", err)
+	}
+
+	token, err := s.auth.Login(ctx, req.GetUsername(), req.GetPassword(), int(req.GetAppId()))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "login: %v", err)
 	}
@@ -102,5 +106,10 @@ func (s *ServerAPI) validatePassword() error {
 
 func (s *ServerAPI) validateUserId() error {
 	// TODO: валидировать user_id
+	return nil
+}
+
+func (s *ServerAPI) validateAppId() error {
+	// TODO: валидировать app_id
 	return nil
 }
