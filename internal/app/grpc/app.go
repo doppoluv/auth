@@ -7,17 +7,17 @@ import (
 	"google.golang.org/grpc"
 
 	grpcauth "auth/internal/grpc/auth"
-	"auth/internal/logger/interfaces"
+	"auth/internal/logger"
 )
 
 type App struct {
-	log  interfaces.Logger
+	log  logger.Logger
 	grpc *grpc.Server
 	port int
 }
 
 func NewApp(
-	log interfaces.Logger,
+	log logger.Logger,
 	port int,
 ) *App {
 	gRPCServer := grpc.NewServer()

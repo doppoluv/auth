@@ -2,16 +2,14 @@ package logger
 
 import (
 	"log"
-
-	"auth/internal/logger/interfaces"
 )
 
 type Logger struct {
 	logger *log.Logger
 }
 
-func NewLogger() interfaces.Logger {
-	return &Logger{logger: log.Default()}
+func NewLogger() Logger {
+	return Logger{logger: log.Default()}
 }
 
 func (l *Logger) Printf(format string, args ...any) {

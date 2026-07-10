@@ -2,7 +2,7 @@ package app
 
 import (
 	appgrpc "auth/internal/app/grpc"
-	"auth/internal/logger/interfaces"
+	"auth/internal/logger"
 )
 
 type App struct {
@@ -10,7 +10,7 @@ type App struct {
 }
 
 func NewApp(
-	log interfaces.Logger,
+	log logger.Logger,
 	port int,
 	storagePath string,
 	tokenTTL string,
