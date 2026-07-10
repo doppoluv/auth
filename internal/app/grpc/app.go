@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 
 	grpcauth "auth/internal/grpc/auth"
-	"auth/internal/logger"
+	"auth/internal/lib/logger"
 )
 
 type App struct {

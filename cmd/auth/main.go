@@ -6,7 +6,7 @@ import (
 
 	"auth/internal/app"
 	"auth/internal/config"
-	"auth/internal/logger"
+	"auth/internal/lib/logger"
 )
 
 func main() {

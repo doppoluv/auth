@@ -2,7 +2,7 @@ package app
 
 import (
 	appgrpc "auth/internal/app/grpc"
-	"auth/internal/logger"
+	"auth/internal/lib/logger"
 )
 
 type App struct {
