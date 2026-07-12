@@ -5,11 +5,21 @@ PROTO_DIR := proto
 GEN_DIR := gen/go
 PROTO_FILE := $(PROTO_DIR)/auth/v1/auth.proto
 
+MIGRATOR_BIN := $(BIN_DIR)/migrator
+MIGRATION_DIR := migration
+STORAGE_PATH := storage/auth.db
+
 .PHONY: build
 build:
 	rm -rf $(BIN_DIR)
 	mkdir -p $(BIN_DIR)
 	go build -o $(APP_BIN) ./cmd/auth
+
+.PHONY: migrate
+migrate:
+	mkdir -p $(BIN_DIR) storage
+	go build -o $(MIGRATOR_BIN) ./cmd/migrator
+	$(MIGRATOR_BIN) -storagepath $(STORAGE_PATH) -migrationpath $(MIGRATION_DIR)
 
 .PHONY: proto
 proto:
