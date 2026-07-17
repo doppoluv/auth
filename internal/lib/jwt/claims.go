@@ -14,7 +14,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func NewClaims(user model.User, duration time.Duration) Claims {
+func NewClaims(user *model.User, duration time.Duration) Claims {
 	expiresAt := time.Now().Add(duration)
 
 	return Claims{

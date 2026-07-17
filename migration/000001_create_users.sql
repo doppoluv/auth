@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
-    is_admin INTEGER NOT NULL DEFAULT 0 CHECK (is_admin IN (0,1)),
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
     password_hash BLOB NOT NULL
 );
 

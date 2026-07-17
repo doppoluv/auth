@@ -11,20 +11,20 @@ type UserSaver interface {
 		ctx context.Context,
 		email, username string,
 		passwordHash []byte,
-	) (userID int64, err error)
+	) (int64, error)
 }
 
 type UserProvider interface {
 	GetUserByUsername(
 		ctx context.Context,
 		username string,
-	) (user model.User, err error)
+	) (*model.User, error)
 	GetUserByEmail(
 		ctx context.Context,
 		email string,
-	) (user model.User, err error)
+	) (*model.User, error)
 	IsUserAdmin(
 		ctx context.Context,
 		userID int64,
-	) (isAdmin bool, err error)
+	) (bool, error)
 }
