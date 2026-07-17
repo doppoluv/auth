@@ -18,7 +18,7 @@ func NewApp(
 	// TODO: инициализация хранилища
 	// TODO: инициализация AUTH сервиса
 
-	GRPCServer := appgrpc.NewApp(log, port)
+	GRPCServer := appgrpc.NewApp(port, log, nil)
 	return &App{
 		GRPCServer: GRPCServer,
 	}

@@ -17,12 +17,13 @@ type App struct {
 }
 
 func NewApp(
-	log logger.Logger,
 	port int,
+	log logger.Logger,
+	authService grpcauth.Auth,
 ) *App {
 	gRPCServer := grpc.NewServer()
 
-	grpcauth.Register(gRPCServer, nil) // TODO: передать реализацию интерфейса Auth
+	grpcauth.Register(gRPCServer, authService)
 
 	return &App{
 		log:  log,
