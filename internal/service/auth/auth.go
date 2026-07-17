@@ -37,10 +37,10 @@ func NewAuth(
 	}
 }
 
-// LoginUser authenticates a user based on the provided username, password, and appID.
+// Login authenticates a user based on the provided username, password, and appID.
 //
 // It returns a JWT token if the authentication is successful.
-func (a *Auth) LoginUser(
+func (a *Auth) Login(
 	ctx context.Context,
 	username, password string,
 ) (string, error) {
@@ -72,10 +72,10 @@ func (a *Auth) LoginUser(
 	return token, nil
 }
 
-// RegisterUser registers a new user with the provided email, username, and password.
+// Register registers a new user with the provided email, username, and password.
 //
-// It returns the userID of the newly created user.
-func (a *Auth) RegisterUser(
+// It returns the userId of the newly created user.
+func (a *Auth) Register(
 	ctx context.Context,
 	email, username, password string,
 ) (int64, error) {
@@ -88,7 +88,7 @@ func (a *Auth) RegisterUser(
 		return 0, fmt.Errorf("generate password hash: %w", err)
 	}
 
-	userID, err := a.userSaver.SaveUser(ctx, email, username, passwordHash)
+	userId, err := a.userSaver.SaveUser(ctx, email, username, passwordHash)
 	if err != nil {
 		if errors.Is(err, storage.ErrUsernameAlreadyExists) {
 			return 0, fmt.Errorf("save user: %w", storage.ErrUsernameAlreadyExists)
@@ -101,21 +101,21 @@ func (a *Auth) RegisterUser(
 		return 0, fmt.Errorf("save user: %w", err)
 	}
 
-	log.Printf("User %s registered successfully with userID: %d", username, userID)
+	log.Printf("User %s registered successfully with userId: %d", username, userId)
 
-	return userID, nil
+	return userId, nil
 }
 
-// IsUserAdmin checks if a user with the given userID has administrative privileges.
-func (a *Auth) IsUserAdmin(
+// IsAdmin checks if a user with the given userId has administrative privileges.
+func (a *Auth) IsAdmin(
 	ctx context.Context,
-	userID int64,
+	userId int64,
 ) (bool, error) {
 	log := a.log
 
-	log.Printf("Checking if user with userID: %d is an admin", userID)
+	log.Printf("Checking if user with userID: %d is an admin", userId)
 
-	isAdmin, err := a.userProvider.IsUserAdmin(ctx, userID)
+	isAdmin, err := a.userProvider.IsUserAdmin(ctx, userId)
 	if err != nil {
 		return false, fmt.Errorf("check if user is admin: %w", err)
 	}

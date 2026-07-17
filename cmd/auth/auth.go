@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"time"
 
 	"auth/internal/app"
 	"auth/internal/config"
@@ -14,16 +15,21 @@ func main() {
 
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatalf("load configuration: %v", err)
+		log.Fatalf("load configuration: %w", err)
 	}
 
 	log.Printf("Configuration loaded\n")
 
-	application := app.NewApp(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+	duration, err := time.ParseDuration(cfg.TokenTTL)
+	if err != nil {
+		log.Fatalf("parse duration: %w", err)
+	}
+
+	application := app.NewApp(log, cfg.GRPC.Port, cfg.StoragePath, duration)
 
 	go func() {
 		if err := application.GRPCServer.Run(); err != nil {
-			log.Fatalf("run gRPC server: %v", err)
+			log.Fatalf("run gRPC server: %w", err)
 		}
 	}()
 

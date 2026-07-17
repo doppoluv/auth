@@ -45,12 +45,12 @@ func (s *Storage) SaveUser(
 		return 0, fmt.Errorf("execute prepared statement: %w", err)
 	}
 
-	userID, err := res.LastInsertId()
+	userId, err := res.LastInsertId()
 	if err != nil {
 		return 0, fmt.Errorf("getting last insert id: %w", err)
 	}
 
-	return userID, nil
+	return userId, nil
 }
 
 func (s *Storage) GetUserByUsername(
@@ -107,7 +107,7 @@ func (s *Storage) GetUserByEmail(
 
 func (s *Storage) IsUserAdmin(
 	ctx context.Context,
-	userID int64,
+	userId int64,
 ) (bool, error) {
 	stmt, err := s.db.Prepare(
 		"SELECT is_admin FROM users WHERE id = ?",
@@ -116,7 +116,7 @@ func (s *Storage) IsUserAdmin(
 		return false, fmt.Errorf("create prepared statement: %w", err) // TODO: желательно не возвращать false
 	}
 
-	row := stmt.QueryRowContext(ctx, userID)
+	row := stmt.QueryRowContext(ctx, userId)
 
 	var isAdmin bool
 	err = row.Scan(&isAdmin)

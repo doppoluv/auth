@@ -25,6 +25,6 @@ type UserProvider interface {
 	) (*model.User, error)
 	IsUserAdmin(
 		ctx context.Context,
-		userID int64,
+		userId int64,
 	) (bool, error)
 }

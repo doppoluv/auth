@@ -35,7 +35,7 @@ func (s *ServerAPI) Register(
 		return nil, status.Errorf(codes.InvalidArgument, "validate email: %v", err)
 	}
 
-	user_id, err := s.auth.Register(ctx, req.GetUsername(), req.GetPassword(), req.GetEmail())
+	user_id, err := s.auth.Register(ctx, req.GetEmail(), req.GetUsername(), req.GetPassword())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "register: %v", err)
 	}
@@ -71,7 +71,7 @@ func (s *ServerAPI) IsAdmin(
 		return nil, status.Errorf(codes.InvalidArgument, "validate user id: %v", err)
 	}
 
-	is_admin, err := s.auth.IsAdmin(ctx, int(req.GetUserId()))
+	is_admin, err := s.auth.IsAdmin(ctx, req.GetUserId())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "is_admin: %v", err)
 	}
