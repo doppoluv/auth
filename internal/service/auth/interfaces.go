@@ -9,8 +9,7 @@ import (
 type UserSaver interface {
 	SaveUser(
 		ctx context.Context,
-		email string,
-		username string,
+		email, username string,
 		passwordHash []byte,
 	) (userID int64, err error)
 }
@@ -28,11 +27,4 @@ type UserProvider interface {
 		ctx context.Context,
 		userID int64,
 	) (isAdmin bool, err error)
-}
-
-type AppProvider interface {
-	GetAppByID(
-		ctx context.Context,
-		appID int64,
-	) (app model.App, err error)
 }

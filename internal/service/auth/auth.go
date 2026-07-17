@@ -13,17 +13,13 @@ import (
 	"auth/internal/storage"
 )
 
-var (
-	errInvalidCredentials = fmt.Errorf("invalid credentials")
-	errInvalidAppID       = fmt.Errorf("invalid app ID")
-)
+var errInvalidCredentials = fmt.Errorf("invalid credentials")
 
 type Auth struct {
 	log          logger.Logger
 	tokenTTL     time.Duration
 	userSaver    UserSaver
 	userProvider UserProvider
-	appProvider  AppProvider
 }
 
 // NewAuth creates a new instance of the Auth service with the provided dependencies.
@@ -32,14 +28,12 @@ func NewAuth(
 	tokenTTL time.Duration,
 	userSaver UserSaver,
 	userProvider UserProvider,
-	appProvider AppProvider,
 ) *Auth {
 	return &Auth{
 		log:          log,
 		tokenTTL:     tokenTTL,
 		userSaver:    userSaver,
 		userProvider: userProvider,
-		appProvider:  appProvider,
 	}
 }
 
@@ -49,11 +43,10 @@ func NewAuth(
 func (a *Auth) LoginUser(
 	ctx context.Context,
 	username, password string,
-	appID int64,
 ) (string, error) {
 	log := a.log
 
-	log.Printf("Authenticating user with username: %s for appID: %d", username, appID)
+	log.Printf("Authenticating user with username: %s", username)
 
 	currentUser, err := a.userProvider.GetUserByUsername(ctx, username)
 	if err != nil {
@@ -68,18 +61,13 @@ func (a *Auth) LoginUser(
 		return "", fmt.Errorf("compare password hash: %w", errInvalidCredentials)
 	}
 
-	currentApp, err := a.appProvider.GetAppByID(ctx, appID)
-	if err != nil {
-		return "", fmt.Errorf("get app by ID: %w", err)
-	}
-
-	log.Printf("User %s authenticated successfully for app: %s", username, currentApp.Name)
-
-	claims := jwt.NewClaims(currentUser, currentApp, a.tokenTTL)
-	token, err := jwt.NewToken(claims, currentApp)
+	claims := jwt.NewClaims(currentUser, a.tokenTTL)
+	token, err := jwt.NewToken(claims)
 	if err != nil {
 		return "", fmt.Errorf("generate token: %w", err)
 	}
+
+	log.Printf("User %s authenticated successfully", username)
 
 	return token, nil
 }
@@ -129,10 +117,6 @@ func (a *Auth) IsUserAdmin(
 
 	isAdmin, err := a.userProvider.IsUserAdmin(ctx, userID)
 	if err != nil {
-		if errors.Is(err, storage.ErrAppNotFound) {
-			return false, fmt.Errorf("check if user is admin: %w", errInvalidAppID)
-		}
-
 		return false, fmt.Errorf("check if user is admin: %w", err)
 	}
 
