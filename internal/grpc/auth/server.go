@@ -2,12 +2,31 @@ package auth
 
 import (
 	"context"
+	"fmt"
+	"net/mail"
+	"regexp"
+	"strings"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	authv1 "auth/gen/go/auth/v1"
+)
+
+var (
+	errInvalidEmail    = fmt.Errorf("invalid email")
+	errInvalidUserId   = fmt.Errorf("invalid user id")
+	errInvalidUsername = fmt.Errorf("invalid username")
+	errInvalidPassword = fmt.Errorf("invalid password")
+
+	// username: only Latin letters, digits, underscore and hyphen are allowed,
+	// first char must be alphanumeric, length is 3..32 characters.
+	usernamePattern = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9_-]{2,31}$`)
+
+	// password: only Latin letters and digits are allowed, and the total
+	// length must be at least 8 characters.
+	passwordPattern = regexp.MustCompile(`^[A-Za-z\d]{8,}$`)
 )
 
 type ServerAPI struct {
@@ -23,15 +42,15 @@ func (s *ServerAPI) Register(
 	ctx context.Context,
 	req *authv1.RegisterRequest,
 ) (*authv1.RegisterResponse, error) {
-	if err := s.validateUsername(); err != nil {
+	if err := s.validateUsername(req.GetUsername()); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validate username: %v", err)
 	}
 
-	if err := s.validatePassword(); err != nil {
+	if err := s.validatePassword(req.GetPassword()); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validate password: %v", err)
 	}
 
-	if err := s.validateEmail(); err != nil {
+	if err := s.validateEmail(req.GetEmail()); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validate email: %v", err)
 	}
 
@@ -47,11 +66,11 @@ func (s *ServerAPI) Login(
 	ctx context.Context,
 	req *authv1.LoginRequest,
 ) (*authv1.LoginResponse, error) {
-	if err := s.validateUsername(); err != nil {
+	if err := s.validateUsername(req.GetUsername()); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validate username: %v", err)
 	}
 
-	if err := s.validatePassword(); err != nil {
+	if err := s.validatePassword(req.GetPassword()); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validate password: %v", err)
 	}
 
@@ -67,7 +86,7 @@ func (s *ServerAPI) IsAdmin(
 	ctx context.Context,
 	req *authv1.IsAdminRequest,
 ) (*authv1.IsAdminResponse, error) {
-	if err := s.validateUserId(); err != nil {
+	if err := s.validateUserId(req.GetUserId()); err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "validate user id: %v", err)
 	}
 
@@ -79,22 +98,55 @@ func (s *ServerAPI) IsAdmin(
 	return &authv1.IsAdminResponse{IsAdmin: is_admin}, nil
 }
 
-func (s *ServerAPI) validateEmail() error {
-	// TODO: валидировать email
+func (s *ServerAPI) validateEmail(email string) error {
+	_, err := mail.ParseAddress(email)
+	if err != nil {
+		return errInvalidEmail
+	}
+
 	return nil
 }
 
-func (s *ServerAPI) validateUsername() error {
-	// TODO: валидировать username
+func (s *ServerAPI) validateUsername(username string) error {
+	if strings.TrimSpace(username) == "" {
+		return errInvalidUsername
+	}
+
+	if !usernamePattern.MatchString(username) {
+		return errInvalidUsername
+	}
+
 	return nil
 }
 
-func (s *ServerAPI) validatePassword() error {
-	// TODO: валидировать пароль
+func (s *ServerAPI) validatePassword(password string) error {
+	if !passwordPattern.MatchString(password) {
+		return errInvalidPassword
+	}
+
+	var hasUpper, hasLower, hasDigit bool
+	for _, ch := range password {
+		switch {
+		case 'A' <= ch && ch <= 'Z':
+			hasUpper = true
+		case 'a' <= ch && ch <= 'z':
+			hasLower = true
+		case '0' <= ch && ch <= '9':
+			hasDigit = true
+		}
+	}
+
+	if !hasUpper || !hasLower || !hasDigit {
+		return errInvalidPassword
+	}
+
 	return nil
 }
 
-func (s *ServerAPI) validateUserId() error {
-	// TODO: валидировать user_id
+func (s *ServerAPI) validateUserId(userId int64) error {
+	if userId < 0 {
+		return errInvalidUserId
+	}
+
 	return nil
 }
