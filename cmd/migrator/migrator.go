@@ -42,5 +42,5 @@ func main() {
 		log.Fatalf("run migrations: %v", err)
 	}
 
-	log.Printf("Migrations applied successfully")
+	log.Infof("Migrations applied successfully")
 }

@@ -12,8 +12,12 @@ func NewLogger() Logger {
 	return Logger{logger: log.Default()}
 }
 
-func (l *Logger) Printf(format string, args ...any) {
+func (l *Logger) Infof(format string, args ...any) {
 	l.logger.Printf("[INFO] "+format, args...)
+}
+
+func (l *Logger) Warningf(format string, args ...any) {
+	l.logger.Printf("[WARNING] "+format, args...)
 }
 
 func (l *Logger) Errorf(format string, args ...any) {

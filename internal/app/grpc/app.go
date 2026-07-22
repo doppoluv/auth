@@ -35,14 +35,14 @@ func NewApp(
 func (a *App) Run() error {
 	log := a.log
 
-	log.Printf("Starting gRPC server on port %d", a.port)
+	log.Infof("Starting gRPC server on port %d", a.port)
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", a.port))
 	if err != nil {
 		return fmt.Errorf("listen tcp: %w", err)
 	}
 
-	log.Printf("gRPC server listening on %s", listener.Addr().String())
+	log.Infof("gRPC server listening on %s", listener.Addr().String())
 
 	if err := a.grpc.Serve(listener); err != nil {
 		return fmt.Errorf("serve gRPC: %w", err)
@@ -54,9 +54,9 @@ func (a *App) Run() error {
 func (a *App) Stop() {
 	log := a.log
 
-	log.Printf("Stopping gRPC server")
+	log.Infof("Stopping gRPC server")
 
 	a.grpc.GracefulStop()
 
-	log.Printf("gRPC server stopped")
+	log.Infof("gRPC server stopped")
 }

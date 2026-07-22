@@ -4,6 +4,7 @@ go 1.25.4
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
+	github.com/joho/godotenv v1.5.1
 	github.com/pressly/goose/v3 v3.24.1
 	golang.org/x/crypto v0.54.0
 	google.golang.org/grpc v1.82.0
@@ -15,7 +16,6 @@ require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect

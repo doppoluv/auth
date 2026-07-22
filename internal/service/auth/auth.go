@@ -46,7 +46,7 @@ func (a *Auth) Login(
 ) (string, error) {
 	log := a.log
 
-	log.Printf("Authenticating user with username: %s", username)
+	log.Infof("Authenticating user with username: %s", username)
 
 	currentUser, err := a.userProvider.GetUserByUsername(ctx, username)
 	if err != nil {
@@ -67,7 +67,7 @@ func (a *Auth) Login(
 		return "", fmt.Errorf("generate token: %w", err)
 	}
 
-	log.Printf("User %s authenticated successfully", username)
+	log.Infof("User %s authenticated successfully", username)
 
 	return token, nil
 }
@@ -81,7 +81,7 @@ func (a *Auth) Register(
 ) (int64, error) {
 	log := a.log
 
-	log.Printf("Registering user with username: %s", username)
+	log.Infof("Registering user with username: %s", username)
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -101,7 +101,7 @@ func (a *Auth) Register(
 		return 0, fmt.Errorf("save user: %w", err)
 	}
 
-	log.Printf("User %s registered successfully with userId: %d", username, userId)
+	log.Infof("User %s registered successfully with userId: %d", username, userId)
 
 	return userId, nil
 }
@@ -113,7 +113,7 @@ func (a *Auth) IsAdmin(
 ) (bool, error) {
 	log := a.log
 
-	log.Printf("Checking if user with userID: %d is an admin", userId)
+	log.Infof("Checking if user with userID: %d is an admin", userId)
 
 	isAdmin, err := a.userProvider.IsUserAdmin(ctx, userId)
 	if err != nil {

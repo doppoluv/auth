@@ -5,6 +5,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	"auth/internal/app"
 	"auth/internal/config"
 	"auth/internal/lib/logger"
@@ -13,12 +15,17 @@ import (
 func main() {
 	log := logger.NewLogger()
 
+	err := godotenv.Load()
+	if err != nil {
+		log.Warningf("error load .env")
+	}
+
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatalf("load configuration: %w", err)
 	}
 
-	log.Printf("Configuration loaded\n")
+	log.Infof("Configuration loaded\n")
 
 	duration, err := time.ParseDuration(cfg.TokenTTL)
 	if err != nil {
@@ -39,5 +46,5 @@ func main() {
 
 	application.GRPCServer.Stop()
 
-	log.Printf("Application stopped")
+	log.Infof("Application stopped")
 }
