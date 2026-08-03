@@ -11,6 +11,7 @@ import (
 type Claims struct {
 	UserId   int64  `json:"user_id"`
 	Username string `json:"username"`
+	Email    string `json:"email"`
 	jwt.RegisteredClaims
 }
 
@@ -20,6 +21,7 @@ func NewClaims(user *model.User, duration time.Duration) Claims {
 	return Claims{
 		UserId:   user.ID,
 		Username: user.Username,
+		Email:    user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 		},

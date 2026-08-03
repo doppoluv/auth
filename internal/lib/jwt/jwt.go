@@ -10,7 +10,7 @@ import (
 func NewToken(claims Claims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(env.GetString("AUTH_JWT_SECRET", ""))
+	tokenString, err := token.SignedString([]byte(env.GetString("AUTH_JWT_SECRET", "default_secret_key")))
 	if err != nil {
 		return "", fmt.Errorf("sign token: %w", err)
 	}

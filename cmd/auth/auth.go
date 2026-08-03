@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/joho/godotenv"
 
@@ -17,7 +16,7 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Warningf("error load .env")
+		log.Warningf("can't load .env file")
 	}
 
 	cfg, err := config.Load()
@@ -27,12 +26,7 @@ func main() {
 
 	log.Infof("Configuration loaded\n")
 
-	duration, err := time.ParseDuration(cfg.TokenTTL)
-	if err != nil {
-		log.Fatalf("parse duration: %w", err)
-	}
-
-	application := app.NewApp(log, cfg.GRPC.Port, cfg.StoragePath, duration)
+	application := app.NewApp(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
 
 	go func() {
 		if err := application.GRPCServer.Run(); err != nil {
