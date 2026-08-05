@@ -5,8 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 
-	_ "modernc.org/sqlite"
+	sqlite "modernc.org/sqlite"
+	sqlite3 "modernc.org/sqlite/lib"
 
 	"auth/internal/domain/model"
 	"auth/internal/storage"
@@ -40,7 +42,16 @@ func (s *Storage) SaveUser(
 
 	res, err := stmt.ExecContext(ctx, username, email, passwordHash)
 	if err != nil {
-		// TODO: проверять на ошибку существующего юзера
+		var sqliteErr *sqlite.Error
+		if errors.As(err, &sqliteErr) &&
+			(sqliteErr.Code() == sqlite3.SQLITE_CONSTRAINT_UNIQUE || sqliteErr.Code() == sqlite3.SQLITE_CONSTRAINT) {
+			switch {
+			case strings.Contains(sqliteErr.Error(), "UNIQUE constraint failed: users.username"):
+				return 0, fmt.Errorf("save user: %w", storage.ErrUsernameAlreadyExists)
+			case strings.Contains(sqliteErr.Error(), "UNIQUE constraint failed: users.email"):
+				return 0, fmt.Errorf("save user: %w", storage.ErrEmailAlreadyExists)
+			}
+		}
 
 		return 0, fmt.Errorf("execute prepared statement: %w", err)
 	}
