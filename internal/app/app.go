@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"time"
 
 	appgrpc "auth/internal/app/grpc"
@@ -18,10 +19,10 @@ func NewApp(
 	port int,
 	storagePath string,
 	tokenTTL time.Duration,
-) *App {
+) (*App, error) {
 	storage, err := sqlite.NewStorage(storagePath)
 	if err != nil {
-		panic(err) // TODO: убрать панику
+		return nil, fmt.Errorf("create sqlite storage: %w", err)
 	}
 
 	authService := auth.NewAuth(log, tokenTTL, storage, storage)
@@ -29,5 +30,5 @@ func NewApp(
 	GRPCServer := appgrpc.NewApp(port, log, authService)
 	return &App{
 		GRPCServer: GRPCServer,
-	}
+	}, nil
 }

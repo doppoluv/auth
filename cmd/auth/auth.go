@@ -26,7 +26,10 @@ func main() {
 
 	log.Infof("Configuration loaded\n")
 
-	application := app.NewApp(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+	application, err := app.NewApp(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+	if err != nil {
+		log.Fatalf("create application: %w", err)
+	}
 
 	go func() {
 		if err := application.GRPCServer.Run(); err != nil {
