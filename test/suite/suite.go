@@ -22,14 +22,14 @@ type Suite struct {
 
 func NewSuite(t *testing.T) (context.Context, *Suite) {
 	t.Helper()
-	t.Parallel()
+	// t.Parallel() // sqlite не поддерживает параллельные тесты
 
 	err := godotenv.Load("../.env")
 	if err != nil {
 		t.Logf("can't load .env file")
 	}
 
-	cfg, err := config.LoadByPath("../config/example.yaml")
+	cfg, err := config.LoadByPath("../config/default_config.yaml")
 	if err != nil {
 		t.Fatalf("load configuration")
 	}

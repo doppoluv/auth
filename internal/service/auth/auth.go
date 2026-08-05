@@ -13,8 +13,6 @@ import (
 	"auth/internal/storage"
 )
 
-var errInvalidCredentials = fmt.Errorf("invalid credentials")
-
 type Auth struct {
 	log          logger.Logger
 	tokenTTL     time.Duration
@@ -51,14 +49,14 @@ func (a *Auth) Login(
 	currentUser, err := a.userProvider.GetUserByUsername(ctx, username)
 	if err != nil {
 		if errors.Is(err, storage.ErrUserNotFound) {
-			return "", fmt.Errorf("get user by username: %w", errInvalidCredentials)
+			return "", fmt.Errorf("get user by username: %w", ErrInvalidCredentials)
 		}
 
 		return "", fmt.Errorf("get user by username: %w", err)
 	}
 
 	if err := bcrypt.CompareHashAndPassword(currentUser.PasswordHash, []byte(password)); err != nil {
-		return "", fmt.Errorf("compare password hash: %w", errInvalidCredentials)
+		return "", fmt.Errorf("compare password hash: %w", ErrInvalidCredentials)
 	}
 
 	claims := jwt.NewClaims(currentUser, a.tokenTTL)
@@ -91,11 +89,11 @@ func (a *Auth) Register(
 	userId, err := a.userSaver.SaveUser(ctx, email, username, passwordHash)
 	if err != nil {
 		if errors.Is(err, storage.ErrUsernameAlreadyExists) {
-			return 0, fmt.Errorf("save user: %w", storage.ErrUsernameAlreadyExists)
+			return 0, fmt.Errorf("save user: %w", ErrUsernameAlreadyExists)
 		}
 
 		if errors.Is(err, storage.ErrEmailAlreadyExists) {
-			return 0, fmt.Errorf("save user: %w", storage.ErrEmailAlreadyExists)
+			return 0, fmt.Errorf("save user: %w", ErrEmailAlreadyExists)
 		}
 
 		return 0, fmt.Errorf("save user: %w", err)
